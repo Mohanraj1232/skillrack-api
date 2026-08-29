@@ -2,6 +2,16 @@ import * as cheerio from "cheerio";
 import type { ResumeData, Profile, Stats, Certificate } from "./types.js";
 
 const SKILLRACK_BASE = "https://www.skillrack.com/faces/resume.xhtml";
+const SKILLRACK_HOME = "https://www.skillrack.com/faces/index.xhtml";
+
+const BROWSER_HEADERS: Record<string, string> = {
+  "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+  "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+  "Accept-Language": "en-US,en;q=0.9",
+  "Accept-Encoding": "gzip, deflate, br",
+  "Connection": "keep-alive",
+  "Upgrade-Insecure-Requests": "1",
+};
 
 function parseNumber(text: string): number {
   const match = text.match(/[\d,]+/);
@@ -108,12 +118,21 @@ function parseCertificates($: cheerio.CheerioAPI): { count: number; list: Certif
 }
 
 export async function fetchResume(id: string, key: string): Promise<ResumeData> {
+  // Step 1: Hit the homepage to get a JSESSIONID cookie (JSF requires a session)
+  const initRes = await fetch(SKILLRACK_HOME, {
+    headers: BROWSER_HEADERS,
+    redirect: "manual",
+  });
+  const setCookies = initRes.headers.getSetCookie?.() ?? [];
+  const cookieHeader = setCookies.map(c => c.split(";")[0]).join("; ");
+
+  // Step 2: Fetch the actual resume page with the session cookie
   const url = `${SKILLRACK_BASE}?id=${encodeURIComponent(id)}&key=${encodeURIComponent(key)}`;
   const response = await fetch(url, {
     headers: {
-      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
-      "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-      "Accept-Language": "en-US,en;q=0.9",
+      ...BROWSER_HEADERS,
+      "Referer": "https://www.skillrack.com/faces/index.xhtml",
+      ...(cookieHeader ? { "Cookie": cookieHeader } : {}),
     },
   });
 
