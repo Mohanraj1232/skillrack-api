@@ -341,6 +341,136 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
+    /* --- API Reference --- */
+    .api-ref {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px;
+      padding: 0; margin-bottom: 1.5rem; overflow: hidden;
+      box-shadow: var(--shadow); transition: background 0.25s, border-color 0.25s;
+    }
+    .api-ref-header {
+      background: linear-gradient(135deg, #0ea5e9, #06b6d4, #10b981);
+      padding: 1.5rem 1.75rem; position: relative;
+    }
+    .api-ref-header h2 {
+      font-size: 1.15rem; font-weight: 800; color: #fff;
+      display: flex; align-items: center; gap: 0.6rem; margin: 0;
+    }
+    .api-ref-header h2 .api-icon {
+      width: 36px; height: 36px; background: rgba(255,255,255,0.2);
+      border-radius: 10px; display: flex; align-items: center; justify-content: center;
+      font-size: 0.85rem; font-weight: 800; backdrop-filter: blur(4px);
+    }
+    .api-ref-header p {
+      font-size: 0.82rem; color: rgba(255,255,255,0.85); margin-top: 0.3rem;
+    }
+    .api-ref-body { padding: 1.5rem 1.75rem; }
+    .api-ref-body h3 {
+      font-size: 0.7rem; font-weight: 700; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: 0.1em;
+      margin: 1.25rem 0 0.6rem; display: flex; align-items: center; gap: 0.5rem;
+    }
+    .api-ref-body h3:first-child { margin-top: 0; }
+    .api-ref-body h3 svg { width: 14px; height: 14px; color: var(--accent); flex-shrink: 0; }
+
+    .api-endpoint {
+      background: var(--bg-input); border: 1px solid var(--border); border-radius: 10px;
+      padding: 0.75rem 1rem; display: flex; align-items: center; gap: 0.75rem;
+      font-family: 'Courier New', Consolas, monospace; font-size: 0.85rem; color: var(--text);
+      transition: background 0.25s, border-color 0.25s;
+    }
+    .method-badge {
+      background: #059669; color: #fff; font-size: 0.65rem; font-weight: 800;
+      padding: 0.2rem 0.55rem; border-radius: 5px; letter-spacing: 0.04em;
+      font-family: 'Inter', system-ui, sans-serif; flex-shrink: 0;
+    }
+    .api-endpoint .param { color: var(--accent); font-weight: 700; }
+
+    .param-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; margin-top: 0.5rem;
+    }
+    .param-card {
+      background: var(--bg-input); border: 1px solid var(--border); border-radius: 10px;
+      padding: 0.75rem 1rem; transition: background 0.25s, border-color 0.25s;
+    }
+    .param-card .param-name {
+      font-family: 'Courier New', Consolas, monospace; font-size: 0.82rem;
+      font-weight: 700; color: var(--accent);
+    }
+    .param-card .param-name .required {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 0.6rem; font-weight: 700; color: var(--error-fg);
+      text-transform: uppercase; letter-spacing: 0.04em; margin-left: 0.4rem;
+    }
+    .param-card .param-type {
+      font-size: 0.7rem; color: var(--text-muted); margin-top: 0.1rem;
+    }
+    .param-card .param-desc {
+      font-size: 0.78rem; color: var(--text-secondary); margin-top: 0.25rem;
+    }
+
+    .code-block {
+      position: relative; margin-top: 0.5rem;
+    }
+    .code-block pre {
+      background: var(--bg-input); border: 1px solid var(--border); border-radius: 10px;
+      padding: 1rem 1.15rem; overflow-x: auto;
+      font-family: 'Courier New', Consolas, monospace; font-size: 0.78rem; line-height: 1.65;
+      color: var(--text-secondary); margin: 0;
+      transition: background 0.25s, border-color 0.25s;
+    }
+    .code-block .copy-btn {
+      position: absolute; top: 0.6rem; right: 0.6rem;
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 7px;
+      padding: 0.3rem 0.65rem; font-size: 0.68rem; font-weight: 600; color: var(--text-muted);
+      cursor: pointer; font-family: 'Inter', system-ui, sans-serif;
+      transition: all 0.15s; display: flex; align-items: center; gap: 0.35rem;
+      box-shadow: var(--shadow);
+    }
+    .code-block .copy-btn svg { width: 12px; height: 12px; }
+    .code-block .copy-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .code-block .copy-btn.copied { border-color: #10b981; color: #10b981; }
+    .json-key { color: #6366f1; }
+    .json-str { color: #10b981; }
+    .json-num { color: #f59e0b; }
+    .json-bool { color: #ec4899; }
+    [data-theme="dark"] .json-key { color: #a5b4fc; }
+    [data-theme="dark"] .json-str { color: #6ee7b7; }
+    [data-theme="dark"] .json-num { color: #fcd34d; }
+    [data-theme="dark"] .json-bool { color: #f9a8d4; }
+
+    .error-grid {
+      display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.5rem;
+    }
+    .error-row {
+      display: flex; align-items: center; gap: 0.75rem;
+      background: var(--bg-input); border: 1px solid var(--border); border-radius: 10px;
+      padding: 0.65rem 1rem; transition: background 0.25s, border-color 0.25s;
+    }
+    .error-code {
+      font-family: 'Courier New', Consolas, monospace; font-size: 0.78rem; font-weight: 800;
+      padding: 0.15rem 0.5rem; border-radius: 5px; flex-shrink: 0;
+    }
+    .error-code.c400 { background: #fef3c7; color: #92400e; }
+    .error-code.c404 { background: #fee2e2; color: #991b1b; }
+    .error-code.c502 { background: #fce7f3; color: #9d174d; }
+    [data-theme="dark"] .error-code.c400 { background: #422006; color: #fcd34d; }
+    [data-theme="dark"] .error-code.c404 { background: #450a0a; color: #fca5a5; }
+    [data-theme="dark"] .error-code.c502 { background: #500724; color: #f9a8d4; }
+    .error-reason { font-size: 0.8rem; color: var(--text-secondary); }
+
+    .api-ref-footer {
+      padding: 0 1.75rem 1.5rem; display: flex; align-items: center; gap: 0.75rem;
+    }
+    .github-btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: var(--bg-input); border: 1px solid var(--border); border-radius: 10px;
+      padding: 0.6rem 1.15rem; font-size: 0.8rem; font-weight: 600;
+      color: var(--text); text-decoration: none; font-family: 'Inter', system-ui, sans-serif;
+      transition: all 0.2s;
+    }
+    .github-btn:hover { border-color: var(--accent); color: var(--accent); box-shadow: var(--shadow-md); transform: translateY(-1px); }
+    .github-btn svg { width: 16px; height: 16px; }
+
     /* --- Footer --- */
     footer {
       text-align: center; margin-top: 3rem; padding-top: 1.5rem;
@@ -359,6 +489,10 @@
       .btn { width: 100%; }
       .theme-toggle { position: static; margin: 0 auto 1rem; }
       header { padding-top: 0; }
+      .param-grid { grid-template-columns: 1fr; }
+      .api-ref-body { padding: 1.25rem; }
+      .api-ref-header { padding: 1.25rem; }
+      .api-ref-footer { padding: 0 1.25rem 1.25rem; }
     }
   </style>
 </head>
@@ -430,12 +564,141 @@
       <div class="certs-grid" id="certsGrid"></div>
     </div>
 
+    <div class="api-ref">
+      <div class="api-ref-header">
+        <h2>
+          <span class="api-icon">&lt;/&gt;</span>
+          API Reference
+        </h2>
+        <p>Fetch any SkillRack profile as structured JSON data</p>
+      </div>
+
+      <div class="api-ref-body">
+        <h3>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m9.86-2.06a4.5 4.5 0 00-1.242-7.244l-4.5-4.5a4.5 4.5 0 00-6.364 6.364L4.343 8.82"/></svg>
+          Endpoint
+        </h3>
+        <div class="api-endpoint">
+          <span class="method-badge">GET</span>
+          /api/profile?id=<span class="param">{id}</span>&amp;key=<span class="param">{key}</span>
+        </div>
+
+        <h3>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 010 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 010-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28z"/><circle cx="12" cy="12" r="3"/></svg>
+          Parameters
+        </h3>
+        <div class="param-grid">
+          <div class="param-card">
+            <div class="param-name">id <span class="required">required</span></div>
+            <div class="param-type">string</div>
+            <div class="param-desc">Your SkillRack user ID</div>
+          </div>
+          <div class="param-card">
+            <div class="param-name">key <span class="required">required</span></div>
+            <div class="param-type">string</div>
+            <div class="param-desc">Your SkillRack resume key</div>
+          </div>
+        </div>
+
+        <h3>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 7.5l3 2.25-3 2.25m4.5 0h3m-9 8.25h13.5A2.25 2.25 0 0021 18V6a2.25 2.25 0 00-2.25-2.25H5.25A2.25 2.25 0 003 6v12a2.25 2.25 0 002.25 2.25z"/></svg>
+          Example Request
+        </h3>
+        <div class="code-block">
+          <button class="copy-btn" id="copyCurl">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            Copy
+          </button>
+          <pre id="curlExample">curl "https://skillrack-api.mohanrajg.me/api/profile?id=447787&amp;key=mohanraj-g"</pre>
+        </div>
+
+        <h3>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5"/></svg>
+          Example Response
+        </h3>
+        <div class="code-block">
+          <pre id="jsonResponseFull"></pre>
+        </div>
+
+        <h3>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"/></svg>
+          Error Responses
+        </h3>
+        <div class="error-grid">
+          <div class="error-row">
+            <span class="error-code c400">400</span>
+            <span class="error-reason">Missing <strong>id</strong> or <strong>key</strong> parameter</span>
+          </div>
+          <div class="error-row">
+            <span class="error-code c404">404</span>
+            <span class="error-reason">Invalid profile (no data found)</span>
+          </div>
+          <div class="error-row">
+            <span class="error-code c502">502</span>
+            <span class="error-reason">SkillRack is unreachable</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="api-ref-footer">
+        <a class="github-btn" href="https://github.com/Mohanraj1232/skillrack-api#readme" target="_blank" rel="noopener">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+          Full docs on GitHub
+        </a>
+      </div>
+    </div>
+
     <footer>
       <p>Developed by <strong>Mohanraj G</strong></p>
     </footer>
   </div>
 
   <script>
+    function syntaxHighlight(json) {
+      return json
+        .replace(/("(?:\\.|[^"\\])*")(\s*:)/g, '<span class="json-key">$1</span>$2')
+        .replace(/:\s*("(?:\\.|[^"\\])*")/g, function(m, str) { return ': <span class="json-str">' + str + '</span>'; })
+        .replace(/:\s*(\d+)/g, ': <span class="json-num">$1</span>')
+        .replace(/:\s*(true|false|null)/g, ': <span class="json-bool">$1</span>');
+    }
+
+    const fullResponse = JSON.stringify({
+      success: true,
+      data: {
+        profile: {
+          name: "MOHANRAJ G", rollNumber: "312423104142", department: "CSE",
+          college: "St.Joseph's Institute of Technology, Chennai",
+          year: "Final Year", batch: 2027, gender: "Male",
+          profileImage: "https://cdn.skillrack.com/profilepic/personal-2.png"
+        },
+        stats: {
+          rank: 1845, level: "0/10",
+          medals: { gold: 0, silver: 0, bronze: 846 },
+          problemsSolved: { total: 2287, codeTest: 108, codeTrack: 1528, dailyChallenge: 86, dailyTest: 54, codeTutor: 511 },
+          languages: { c: 1140, java: 576, python3: 375, cpp23: 141, sql: 53, cpp: 2 }
+        },
+        certificates: {
+          count: 26,
+          list: [{ title: "Bronze Medals - 700", date: "2025-09-17T19:05:00", link: "https://www.skillrack.com/cert/589773/DRG" }]
+        }
+      }
+    }, null, 2);
+
+    document.getElementById('jsonResponseFull').innerHTML = syntaxHighlight(fullResponse);
+
+    document.getElementById('copyCurl').addEventListener('click', function() {
+      const text = document.getElementById('curlExample').textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        this.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg> Copied!';
+        this.classList.add('copied');
+        const btn = this;
+        setTimeout(() => {
+          btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copy';
+          btn.classList.remove('copied');
+        }, 2000);
+      });
+    });
+
     const LANG_COLORS = ['#6366f1','#ec4899','#f59e0b','#10b981','#06b6d4','#8b5cf6','#ef4444','#14b8a6'];
     const form = document.getElementById('searchForm');
     const statusEl = document.getElementById('status');
