@@ -1,3 +1,9 @@
 {
+  "regions": ["bom1"],
+  "functions": {
+    "api/index.ts": {
+      "maxDuration": 15
+    }
+  },
   "rewrites": [{ "source": "/api/(.*)", "destination": "/api" }]
 }
