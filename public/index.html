@@ -120,6 +120,66 @@
     :root:not([data-theme="dark"]) .icon-sun { display: none; }
     :root:not([data-theme="dark"]) .icon-moon { display: block; }
 
+    /* --- How To --- */
+    .how-to {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px;
+      padding: 1rem 1.25rem; margin-bottom: 1rem;
+      box-shadow: var(--shadow); transition: background 0.25s, border-color 0.25s;
+    }
+    .how-to summary {
+      font-size: 0.85rem; font-weight: 600; color: var(--accent); cursor: pointer;
+      list-style: none; display: flex; align-items: center; gap: 0.5rem;
+    }
+    .how-to summary::before { content: '\25B6'; font-size: 0.6rem; transition: transform 0.2s; }
+    .how-to[open] summary::before { transform: rotate(90deg); }
+    .how-to summary::-webkit-details-marker { display: none; }
+    .how-to ol { margin: 0.75rem 0 0.5rem 1.25rem; font-size: 0.82rem; color: var(--text-secondary); }
+    .how-to ol li { margin-bottom: 0.25rem; }
+    .how-to a { color: var(--accent); text-decoration: none; }
+    .how-to a:hover { text-decoration: underline; }
+    .url-example {
+      background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px;
+      padding: 0.6rem 0.85rem; margin: 0.5rem 0; overflow-x: auto;
+      transition: background 0.25s, border-color 0.25s;
+    }
+    .url-example code { font-size: 0.78rem; color: var(--text-secondary); white-space: nowrap; }
+    .url-example mark {
+      background: var(--accent-soft); color: var(--accent); font-weight: 700;
+      padding: 0.1rem 0.3rem; border-radius: 4px;
+    }
+    .hint { font-size: 0.78rem; color: var(--text-muted); margin-top: 0.4rem; }
+
+    /* --- URL Extractor --- */
+    .url-extractor {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px;
+      padding: 1rem 1.25rem; margin-bottom: 1rem;
+      box-shadow: var(--shadow); transition: background 0.25s, border-color 0.25s;
+    }
+    .url-extractor label {
+      font-size: 0.7rem; font-weight: 600; color: var(--text-secondary);
+      text-transform: uppercase; letter-spacing: 0.06em;
+    }
+    .url-input-row { display: flex; gap: 0.5rem; margin-top: 0.35rem; }
+    .url-input-row input {
+      flex: 1; background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px;
+      padding: 0.55rem 0.75rem; color: var(--text-heading); font-size: 0.85rem; font-family: inherit;
+      transition: border-color 0.15s, background 0.25s; min-width: 0;
+    }
+    .url-input-row input:focus { outline: none; border-color: var(--accent); }
+    .url-input-row input::placeholder { color: var(--text-muted); font-size: 0.8rem; }
+    .btn-outline {
+      background: transparent; color: var(--accent); border: 1px solid var(--accent);
+      border-radius: 8px; padding: 0.55rem 1.1rem; font-size: 0.85rem; font-weight: 600;
+      font-family: inherit; cursor: pointer; transition: background 0.15s, color 0.15s; white-space: nowrap;
+    }
+    .btn-outline:hover { background: var(--accent); color: #fff; }
+    .extract-status {
+      font-size: 0.75rem; margin-top: 0.4rem; min-height: 1.1em;
+      transition: color 0.15s;
+    }
+    .extract-status.success { color: #10b981; }
+    .extract-status.error { color: var(--error-fg); }
+
     /* --- Search Form --- */
     .search-form {
       display: flex; gap: 0.75rem; align-items: end;
@@ -318,14 +378,36 @@
       <div class="accent-line"></div>
     </header>
 
+    <details class="how-to" id="howTo">
+      <summary>How to find your ID and Key</summary>
+      <ol>
+        <li>Log in to <a href="https://www.skillrack.com" target="_blank" rel="noopener">skillrack.com</a></li>
+        <li>Go to <strong>Profile</strong> and click <strong>Share Resume</strong></li>
+        <li>Your public resume URL looks like this:</li>
+      </ol>
+      <div class="url-example">
+        <code>https://www.skillrack.com/faces/resume.xhtml?id=<mark>447787</mark>&key=<mark>mohanraj-g</mark></code>
+      </div>
+      <p class="hint">Or just paste your full resume URL below and we'll extract it for you.</p>
+    </details>
+
+    <div class="url-extractor" id="urlExtractor">
+      <label for="pasteUrl">Paste SkillRack Resume URL</label>
+      <div class="url-input-row">
+        <input type="text" id="pasteUrl" placeholder="https://www.skillrack.com/faces/resume.xhtml?id=...&key=...">
+        <button type="button" class="btn btn-outline" id="extractBtn">Extract</button>
+      </div>
+      <p class="extract-status" id="extractStatus"></p>
+    </div>
+
     <form class="search-form" id="searchForm">
       <div class="field">
         <label for="id">SkillRack ID</label>
-        <input type="text" id="id" name="id" placeholder="e.g. 447801" required>
+        <input type="text" id="id" name="id" placeholder="e.g. 447787" required>
       </div>
       <div class="field">
         <label for="key">Resume Key</label>
-        <input type="text" id="key" name="key" placeholder="e.g. nitish1705" required>
+        <input type="text" id="key" name="key" placeholder="e.g. mohanraj-g" required>
       </div>
       <button type="submit" class="btn" id="submitBtn">Fetch</button>
     </form>
@@ -349,7 +431,7 @@
     </div>
 
     <footer>
-      <p>Powered by <a href="/api/profile?id=447801&key=nitish1705" target="_blank">SkillRack API</a></p>
+      <p>Developed by <strong>Mohanraj G</strong></p>
     </footer>
   </div>
 
@@ -369,6 +451,44 @@
       const next = isDark() ? 'light' : 'dark';
       document.documentElement.setAttribute('data-theme', next);
       localStorage.setItem('theme', next);
+    });
+
+    const extractBtn = document.getElementById('extractBtn');
+    const pasteInput = document.getElementById('pasteUrl');
+    const extractStatus = document.getElementById('extractStatus');
+
+    function extractFromUrl(raw) {
+      try {
+        const url = new URL(raw.trim());
+        const id = url.searchParams.get('id');
+        const key = url.searchParams.get('key');
+        if (id && key) return { id, key };
+      } catch {}
+      const match = raw.match(/[?&]id=([^&]+).*[?&]key=([^&\s]+)/);
+      if (match) return { id: match[1], key: match[2] };
+      return null;
+    }
+
+    extractBtn.addEventListener('click', () => {
+      const result = extractFromUrl(pasteInput.value);
+      if (result) {
+        document.getElementById('id').value = result.id;
+        document.getElementById('key').value = result.key;
+        extractStatus.textContent = 'ID and Key extracted successfully!';
+        extractStatus.className = 'extract-status success';
+        pasteInput.value = '';
+      } else {
+        extractStatus.textContent = 'Invalid URL. Make sure it contains id and key parameters.';
+        extractStatus.className = 'extract-status error';
+      }
+    });
+
+    pasteInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { e.preventDefault(); extractBtn.click(); }
+    });
+
+    pasteInput.addEventListener('paste', () => {
+      setTimeout(() => extractBtn.click(), 50);
     });
 
     const params = new URLSearchParams(location.search);
