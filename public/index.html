@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SkillRack API</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    (function() {
+      var t = localStorage.getItem('theme');
+      if (t) { document.documentElement.setAttribute('data-theme', t); }
+      else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+    })();
+  </script>
+  <style>
+    :root {
+      --bg: #f4f4f5;
+      --bg-card: #ffffff;
+      --bg-input: #f4f4f5;
+      --bg-track: #e4e4e7;
+      --border: #e4e4e7;
+      --text: #18181b;
+      --text-secondary: #71717a;
+      --text-muted: #a1a1aa;
+      --text-heading: #09090b;
+      --accent: #4f46e5;
+      --accent-hover: #4338ca;
+      --accent-soft: #eef2ff;
+      --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+      --tag-bg: #f4f4f5;
+      --tag-fg: #52525b;
+      --tag-dept-bg: #eef2ff;
+      --tag-dept-fg: #4338ca;
+      --tag-year-bg: #eff6ff;
+      --tag-year-fg: #1d4ed8;
+      --error-bg: #fef2f2;
+      --error-fg: #dc2626;
+      --error-border: #fecaca;
+      --gold: #d97706;
+      --silver: #64748b;
+      --bronze: #b45309;
+      --rank: #4f46e5;
+    }
+
+    [data-theme="dark"] {
+      --bg: #0a0a0a;
+      --bg-card: #18181b;
+      --bg-input: #09090b;
+      --bg-track: #27272a;
+      --border: #27272a;
+      --text: #e4e4e7;
+      --text-secondary: #a1a1aa;
+      --text-muted: #71717a;
+      --text-heading: #ffffff;
+      --accent: #6366f1;
+      --accent-hover: #818cf8;
+      --accent-soft: #1e1b4b;
+      --shadow: 0 1px 3px rgba(0,0,0,0.3);
+      --shadow-md: 0 4px 16px rgba(0,0,0,0.4);
+      --tag-bg: #27272a;
+      --tag-fg: #a1a1aa;
+      --tag-dept-bg: #1e1b4b;
+      --tag-dept-fg: #a5b4fc;
+      --tag-year-bg: #172554;
+      --tag-year-fg: #93c5fd;
+      --error-bg: #1a0a0a;
+      --error-fg: #f87171;
+      --error-border: #7f1d1d;
+      --gold: #fbbf24;
+      --silver: #94a3b8;
+      --bronze: #d97706;
+      --rank: #818cf8;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+      transition: background 0.25s, color 0.25s;
+    }
+
+    .container { max-width: 960px; margin: 0 auto; padding: 2rem 1rem 3rem; }
+
+    /* --- Header --- */
+    header { text-align: center; margin-bottom: 2.5rem; position: relative; }
+    header h1 {
+      font-size: 1.75rem; font-weight: 800; color: var(--text-heading);
+      letter-spacing: -0.02em;
+    }
+    header h1 span { color: var(--accent); }
+    header p { color: var(--text-muted); font-size: 0.875rem; margin-top: 0.25rem; }
+    .accent-line {
+      width: 48px; height: 3px; background: var(--accent); border-radius: 2px;
+      margin: 0.75rem auto 0;
+    }
+
+    /* --- Theme Toggle --- */
+    .theme-toggle {
+      position: absolute; top: 0; right: 0;
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
+      width: 40px; height: 40px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
+      box-shadow: var(--shadow);
+    }
+    .theme-toggle:hover { box-shadow: var(--shadow-md); border-color: var(--accent); }
+    .theme-toggle svg { width: 18px; height: 18px; color: var(--text-secondary); transition: color 0.2s; }
+    .theme-toggle:hover svg { color: var(--accent); }
+    .icon-sun, .icon-moon { display: none; }
+    [data-theme="dark"] .icon-sun { display: block; }
+    [data-theme="dark"] .icon-moon { display: none; }
+    :root:not([data-theme="dark"]) .icon-sun { display: none; }
+    :root:not([data-theme="dark"]) .icon-moon { display: block; }
+
+    /* --- Search Form --- */
+    .search-form {
+      display: flex; gap: 0.75rem; align-items: end;
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px;
+      padding: 1.25rem; margin-bottom: 2rem; flex-wrap: wrap;
+      box-shadow: var(--shadow);
+      transition: background 0.25s, border-color 0.25s, box-shadow 0.25s;
+    }
+    .search-form:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 15%, transparent); }
+    .field { display: flex; flex-direction: column; gap: 0.3rem; flex: 1; min-width: 140px; }
+    .field label { font-size: 0.7rem; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.06em; }
+    .field input {
+      background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px;
+      padding: 0.6rem 0.75rem; color: var(--text-heading); font-size: 0.9rem; font-family: inherit;
+      transition: border-color 0.15s, background 0.25s;
+    }
+    .field input:focus { outline: none; border-color: var(--accent); }
+    .field input::placeholder { color: var(--text-muted); }
+
+    .btn {
+      background: var(--accent); color: #fff; border: none; border-radius: 8px;
+      padding: 0.6rem 1.5rem; font-size: 0.9rem; font-weight: 600; font-family: inherit;
+      cursor: pointer; transition: background 0.15s, transform 0.1s; white-space: nowrap;
+    }
+    .btn:hover { background: var(--accent-hover); }
+    .btn:active { transform: scale(0.97); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    /* --- Messages --- */
+    .message {
+      text-align: center; padding: 2rem; color: var(--text-muted); font-size: 0.9rem;
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px;
+      box-shadow: var(--shadow);
+      transition: background 0.25s, border-color 0.25s;
+    }
+    .message.error { color: var(--error-fg); border-color: var(--error-border); background: var(--error-bg); }
+
+    .spinner {
+      width: 32px; height: 32px; border: 3px solid var(--border); border-top-color: var(--accent);
+      border-radius: 50%; animation: spin 0.6s linear infinite; margin: 0 auto 0.75rem;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* --- Profile Header --- */
+    .profile-header {
+      display: flex; gap: 1.5rem; align-items: center;
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px;
+      padding: 1.5rem; margin-bottom: 1rem;
+      box-shadow: var(--shadow);
+      transition: background 0.25s, border-color 0.25s, box-shadow 0.25s, transform 0.2s;
+      position: relative; overflow: hidden;
+    }
+    .profile-header::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--accent), #ec4899, #f59e0b);
+    }
+    .profile-header:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); }
+    .profile-header img {
+      width: 80px; height: 80px; border-radius: 50%;
+      border: 3px solid var(--border); flex-shrink: 0;
+      transition: border-color 0.25s;
+    }
+    .profile-info h2 { font-size: 1.25rem; font-weight: 700; color: var(--text-heading); }
+    .profile-info .meta { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.15rem; }
+    .profile-info .tags { display: flex; gap: 0.5rem; margin-top: 0.5rem; flex-wrap: wrap; }
+    .tag {
+      font-size: 0.68rem; font-weight: 600; padding: 0.2rem 0.6rem;
+      border-radius: 9999px; background: var(--tag-bg); color: var(--tag-fg);
+      text-transform: uppercase; letter-spacing: 0.03em;
+      transition: background 0.25s, color 0.25s;
+    }
+    .tag.dept { background: var(--tag-dept-bg); color: var(--tag-dept-fg); }
+    .tag.year { background: var(--tag-year-bg); color: var(--tag-year-fg); }
+
+    /* --- Section Titles --- */
+    .section-title {
+      font-size: 0.72rem; font-weight: 700; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: 0.1em;
+      margin: 1.75rem 0 0.75rem; padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+      transition: color 0.25s, border-color 0.25s;
+    }
+
+    /* --- Stat Cards --- */
+    .stats-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 0.75rem; margin-bottom: 1rem;
+    }
+    .stat-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px;
+      padding: 1rem; text-align: center;
+      box-shadow: var(--shadow);
+      transition: background 0.25s, border-color 0.25s, box-shadow 0.2s, transform 0.2s;
+    }
+    .stat-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+    .stat-card .value { font-size: 1.5rem; font-weight: 800; color: var(--text-heading); transition: color 0.25s; }
+    .stat-card .label { font-size: 0.68rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 0.15rem; font-weight: 500; }
+    .stat-card.gold .value { color: var(--gold); }
+    .stat-card.silver .value { color: var(--silver); }
+    .stat-card.bronze .value { color: var(--bronze); }
+    .stat-card.rank .value { color: var(--rank); }
+
+    /* --- Language Bars --- */
+    .lang-bars {
+      display: flex; flex-direction: column; gap: 0.65rem;
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px;
+      padding: 1.25rem; margin-bottom: 1rem;
+      box-shadow: var(--shadow);
+      transition: background 0.25s, border-color 0.25s;
+    }
+    .lang-row { display: flex; align-items: center; gap: 0.75rem; }
+    .lang-name {
+      width: 65px; font-size: 0.75rem; font-weight: 700; color: var(--text-secondary);
+      text-transform: uppercase; text-align: right; flex-shrink: 0; letter-spacing: 0.02em;
+    }
+    .lang-track {
+      flex: 1; height: 24px; background: var(--bg-track); border-radius: 12px;
+      overflow: hidden; position: relative; transition: background 0.25s;
+    }
+    .lang-fill {
+      height: 100%; border-radius: 12px; transition: width 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+      min-width: 4px; display: flex; align-items: center; justify-content: flex-end; padding-right: 8px;
+    }
+    .lang-fill-label {
+      font-size: 0.65rem; font-weight: 700; color: #fff; opacity: 0.9;
+    }
+    .lang-count {
+      font-size: 0.75rem; font-weight: 700; color: var(--text); width: 40px;
+      text-align: right; flex-shrink: 0;
+    }
+
+    /* --- Certificate Cards --- */
+    .certs-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 0.75rem;
+    }
+    .cert-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px;
+      padding: 1rem 1rem 1rem 1.15rem; display: flex; flex-direction: column; gap: 0.35rem;
+      border-left: 3px solid var(--accent);
+      box-shadow: var(--shadow);
+      transition: background 0.25s, border-color 0.25s, box-shadow 0.2s, transform 0.2s;
+    }
+    .cert-card:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); }
+    .cert-card .title { font-size: 0.85rem; font-weight: 600; color: var(--text); transition: color 0.25s; }
+    .cert-card .date { font-size: 0.75rem; color: var(--text-muted); }
+    .cert-card a {
+      font-size: 0.75rem; color: var(--accent); text-decoration: none;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      transition: color 0.15s;
+    }
+    .cert-card a:hover { text-decoration: underline; color: var(--accent-hover); }
+
+    /* --- Results --- */
+    #results { display: none; }
+    #results.show { display: block; animation: fadeUp 0.35s ease; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* --- Footer --- */
+    footer {
+      text-align: center; margin-top: 3rem; padding-top: 1.5rem;
+      border-top: 1px solid var(--border); transition: border-color 0.25s;
+    }
+    footer p { font-size: 0.75rem; color: var(--text-muted); }
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    /* --- Responsive --- */
+    @media (max-width: 600px) {
+      .profile-header { flex-direction: column; text-align: center; }
+      .profile-info .tags { justify-content: center; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .search-form { flex-direction: column; }
+      .btn { width: 100%; }
+      .theme-toggle { position: static; margin: 0 auto 1rem; }
+      header { padding-top: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+        <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="5"/><path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+        </svg>
+        <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+        </svg>
+      </button>
+      <h1>Skill<span>Rack</span> API</h1>
+      <p>Enter a SkillRack resume ID and key to view profile data</p>
+      <div class="accent-line"></div>
+    </header>
+
+    <form class="search-form" id="searchForm">
+      <div class="field">
+        <label for="id">SkillRack ID</label>
+        <input type="text" id="id" name="id" placeholder="e.g. 447801" required>
+      </div>
+      <div class="field">
+        <label for="key">Resume Key</label>
+        <input type="text" id="key" name="key" placeholder="e.g. nitish1705" required>
+      </div>
+      <button type="submit" class="btn" id="submitBtn">Fetch</button>
+    </form>
+
+    <div id="status"></div>
+
+    <div id="results">
+      <div class="profile-header" id="profileHeader"></div>
+
+      <div class="section-title">Overview</div>
+      <div class="stats-grid" id="overviewStats"></div>
+
+      <div class="section-title">Problems Solved</div>
+      <div class="stats-grid" id="solvedStats"></div>
+
+      <div class="section-title">Languages</div>
+      <div class="lang-bars" id="langBars"></div>
+
+      <div class="section-title" id="certsTitle">Certificates</div>
+      <div class="certs-grid" id="certsGrid"></div>
+    </div>
+
+    <footer>
+      <p>Powered by <a href="/api/profile?id=447801&key=nitish1705" target="_blank">SkillRack API</a></p>
+    </footer>
+  </div>
+
+  <script>
+    const LANG_COLORS = ['#6366f1','#ec4899','#f59e0b','#10b981','#06b6d4','#8b5cf6','#ef4444','#14b8a6'];
+    const form = document.getElementById('searchForm');
+    const statusEl = document.getElementById('status');
+    const resultsEl = document.getElementById('results');
+    const submitBtn = document.getElementById('submitBtn');
+    const themeBtn = document.getElementById('themeToggle');
+
+    function isDark() {
+      return document.documentElement.getAttribute('data-theme') === 'dark';
+    }
+
+    themeBtn.addEventListener('click', () => {
+      const next = isDark() ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+    });
+
+    const params = new URLSearchParams(location.search);
+    if (params.get('id')) document.getElementById('id').value = params.get('id');
+    if (params.get('key')) document.getElementById('key').value = params.get('key');
+    if (params.get('id') && params.get('key')) form.dispatchEvent(new Event('submit'));
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = document.getElementById('id').value.trim();
+      const key = document.getElementById('key').value.trim();
+      if (!id || !key) return;
+
+      const url = new URL(window.location.href);
+      url.search = `?id=${encodeURIComponent(id)}&key=${encodeURIComponent(key)}`;
+      history.replaceState(null, '', url);
+
+      submitBtn.disabled = true;
+      resultsEl.classList.remove('show');
+      resultsEl.style.display = 'none';
+      statusEl.innerHTML = '<div class="message"><div class="spinner"></div>Fetching profile...</div>';
+
+      try {
+        const res = await fetch(`/api/profile?id=${encodeURIComponent(id)}&key=${encodeURIComponent(key)}`);
+        const json = await res.json();
+        if (!json.success) throw new Error(json.error || 'Unknown error');
+        render(json.data);
+        statusEl.innerHTML = '';
+        resultsEl.style.display = 'block';
+        requestAnimationFrame(() => resultsEl.classList.add('show'));
+      } catch (err) {
+        statusEl.innerHTML = `<div class="message error">${escapeHtml(err.message)}</div>`;
+      } finally {
+        submitBtn.disabled = false;
+      }
+    });
+
+    function escapeHtml(s) {
+      const d = document.createElement('div');
+      d.textContent = s;
+      return d.innerHTML;
+    }
+
+    function render(data) {
+      const { profile: p, stats: s, certificates: c } = data;
+
+      document.getElementById('profileHeader').innerHTML = `
+        <img src="${escapeHtml(p.profileImage)}" alt="${escapeHtml(p.name)}">
+        <div class="profile-info">
+          <h2>${escapeHtml(p.name)}</h2>
+          <div class="meta">${escapeHtml(p.rollNumber)} &middot; ${escapeHtml(p.college)}</div>
+          <div class="tags">
+            <span class="tag dept">${escapeHtml(p.department)}</span>
+            <span class="tag year">${escapeHtml(p.year)} ${p.batch}</span>
+            <span class="tag">${escapeHtml(p.gender)}</span>
+          </div>
+        </div>`;
+
+      document.getElementById('overviewStats').innerHTML = `
+        ${statCard(s.rank.toLocaleString(), 'Rank', 'rank')}
+        ${statCard(s.level, 'Level', '')}
+        ${statCard(s.medals.gold, 'Gold', 'gold')}
+        ${statCard(s.medals.silver, 'Silver', 'silver')}
+        ${statCard(s.medals.bronze, 'Bronze', 'bronze')}`;
+
+      const ps = s.problemsSolved;
+      document.getElementById('solvedStats').innerHTML = `
+        ${statCard(ps.total.toLocaleString(), 'Total', 'rank')}
+        ${statCard(ps.codeTest, 'Code Test', '')}
+        ${statCard(ps.codeTrack, 'Code Track', '')}
+        ${statCard(ps.dailyChallenge, 'Daily Challenge', '')}
+        ${statCard(ps.dailyTest, 'Daily Test', '')}
+        ${statCard(ps.codeTutor, 'Code Tutor', '')}`;
+
+      const langs = Object.entries(s.languages);
+      const maxLang = Math.max(...langs.map(([,v]) => v), 1);
+      document.getElementById('langBars').innerHTML = langs.map(([name, count], i) => {
+        const pct = (count / maxLang * 100).toFixed(1);
+        const color = LANG_COLORS[i % LANG_COLORS.length];
+        const showInner = parseFloat(pct) > 20;
+        return `
+        <div class="lang-row">
+          <span class="lang-name">${escapeHtml(name)}</span>
+          <div class="lang-track">
+            <div class="lang-fill" style="width:${pct}%;background:${color}">
+              ${showInner ? `<span class="lang-fill-label">${count}</span>` : ''}
+            </div>
+          </div>
+          ${showInner ? '' : `<span class="lang-count">${count}</span>`}
+        </div>`;
+      }).join('');
+
+      document.getElementById('certsTitle').textContent = `Certificates (${c.count})`;
+      document.getElementById('certsGrid').innerHTML = c.list.map((cert, i) => `
+        <div class="cert-card" style="border-left-color:${LANG_COLORS[i % LANG_COLORS.length]}">
+          <div class="title">${escapeHtml(cert.title)}</div>
+          <div class="date">${formatDate(cert.date)}</div>
+          <a href="${escapeHtml(cert.link)}" target="_blank" rel="noopener">${escapeHtml(cert.link)}</a>
+        </div>`).join('');
+    }
+
+    function statCard(value, label, cls) {
+      return `<div class="stat-card ${cls}"><div class="value">${value}</div><div class="label">${label}</div></div>`;
+    }
+
+    function formatDate(iso) {
+      try { return new Date(iso).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }); }
+      catch { return iso; }
+    }
+  </script>
+</body>
+</html>
